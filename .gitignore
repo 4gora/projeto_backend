@@ -1,0 +1,54 @@
+# PHP .gitignore padrão
+# Documentação: https://github.com/github/gitignore/blob/main/PHP.gitignore
+
+# Arquivos e pastas do Composer
+/vendor/
+composer.lock
+
+# Configurações do PHPStorm e outros IDEs
+/.idea/
+*.sublime-workspace
+*.sublime-project
+
+# Arquivos de log
+*.log
+
+# Cache do PHP
+*.cache
+*.php.cache
+
+# Arquivos temporários
+*.tmp
+*.temp
+
+# Diretórios comuns de cache
+/cache/
+/tmp/
+
+# Configurações do sistema operacional
+.DS_Store
+Thumbs.db
+
+# Arquivos de upload
+/uploads/
+
+# Arquivos de ambiente
+.env
+.env.*
+
+# Relatórios de erros
+error_log
+
+# Testes
+/phpunit.xml
+/phpunit.xml.dist
+
+# Cobertura de testes
+coverage/
+
+# Outras pastas comuns
+node_modules/
+
+# Arquivos de build
+/build/
+/dist/
