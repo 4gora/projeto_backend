@@ -1,25 +1,34 @@
-import express from "express";
-import { Client } from "pg";
+import express from 'express';
+import pacientesRouter from './routes/pacientes';
+import agendamentosRouter from './routes/agendamentos';
+import { initPacienteTable } from './services/pacienteService';
 
 const app = express();
+const PORT = process.env.PORT || 3000;
+
+// Middleware para JSON
 app.use(express.json());
 
-const db = new Client({
-  host: "db",
-  user: "admin",
-  password: "@dmin.Teste",
-  database: "vidaplus_db",
-  port: 5432,
+// Inicialização do banco e tabelas
+initPacienteTable()
+  .then(() => {
+    console.log('Tabela de pacientes pronta.');
+  })
+  .catch((err) => {
+    console.error('Erro ao inicializar tabela de pacientes:', err);
+    process.exit(1);
+  });
+
+// Rotas principais
+app.use('/pacientes', pacientesRouter);
+app.use('/agendamentos', agendamentosRouter);
+
+// Rota de status
+app.get('/', (_req, res) => {
+  res.send('SGHSS VidaPlus API rodando.');
 });
 
-db.connect()
-  .then(() => console.log("Conectado ao Postgres com sucesso!"))
-  .catch((err) => console.error("Erro ao conectar ao banco:", err));
-
-app.get("/", (req, res) => {
-  res.send("SGHSS VidaPlus - Back-end Online!");
-});
-
-app.listen(3000, () => {
-  console.log("Servidor rodando na porta 3000");
+// Inicialização do servidor
+app.listen(PORT, () => {
+  console.log(`Servidor rodando na porta ${PORT}`);
 });
