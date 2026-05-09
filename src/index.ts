@@ -3,6 +3,8 @@ import pacientesRouter from './routes/pacientes';
 import agendamentosRouter from './routes/agendamentos';
 import { initPacienteTable } from './services/pacienteService';
 
+//#TODO: Incluir Swagger para documentação automática das APIs
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
