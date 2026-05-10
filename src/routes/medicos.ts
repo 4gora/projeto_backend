@@ -1,17 +1,17 @@
 /**
  * @swagger
  * {
- * "/pacientes": {
+ * "/medicos": {
  * "get": {
- * "summary": "Listar pacientes",
- * "tags": ["Pacientes"],
+ * "summary": "Listar todos os médicos",
+ * "tags": ["Médicos"],
  * "responses": {
  * "200": { "description": "Sucesso" }
  * }
  * },
  * "post": {
- * "summary": "Cadastrar paciente",
- * "tags": ["Pacientes"],
+ * "summary": "Cadastrar um novo médico",
+ * "tags": ["Médicos"],
  * "requestBody": {
  * "required": true,
  * "content": {
@@ -20,7 +20,7 @@
  * "type": "object",
  * "properties": {
  * "nome": { "type": "string" },
- * "cpf": { "type": "string" },
+ * "crm": { "type": "string" },
  * "email": { "type": "string" }
  * }
  * }
@@ -28,38 +28,34 @@
  * }
  * },
  * "responses": {
- * "201": { "description": "Criado" }
+ * "201": { "description": "Médico cadastrado" },
+ * "400": { "description": "Erro na validação" }
  * }
  * }
  * }
  * }
  */
 
-// src/routes/pacientes.ts
+// src/routes/medicos.ts
 import { Router } from "express";
-import {
-  cadastrarPaciente,
-  listarPacientes,
-} from "../services/pacienteService";
+import { cadastrarMedico, listarMedicos } from "../services/medicoService";
 
 const router = Router();
 
-// POST /pacientes - Cadastrar paciente
 router.post("/", async (req, res) => {
   try {
-    const { nome, cpf, email } = req.body;
-    const paciente = await cadastrarPaciente({ nome, cpf, email });
-    res.status(201).json(paciente);
+    const { nome, crm, email } = req.body;
+    const medico = await cadastrarMedico({ nome, crm, email });
+    res.status(201).json(medico);
   } catch (error: any) {
     res.status(400).json({ error: error.message });
   }
 });
 
-// GET /pacientes - Listar pacientes
 router.get("/", async (_req, res) => {
   try {
-    const pacientes = await listarPacientes();
-    res.json(pacientes);
+    const medicos = await listarMedicos();
+    res.json(medicos);
   } catch (error: any) {
     res.status(500).json({ error: error.message });
   }
