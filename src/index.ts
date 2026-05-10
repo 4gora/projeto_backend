@@ -33,6 +33,30 @@ app.get("/", (req, res) => {
   );
 });
 
+const seedDatabase = async (client: any) => {
+  console.log("Inserindo dados de teste...");
+
+  // Mock de Médicos
+  await client.query(`
+    INSERT INTO medicos (nome, crm, email) 
+    VALUES 
+      ('Dr. Alessandro Guilherme', '1111111111', 'alessandro@vidaplus.com'),
+      ('Dra. Vitor Souza', '2222222222', 'victor@vidaplus.com')
+    ON CONFLICT (crm) DO NOTHING;
+  `);
+
+  // Mock de Pacientes
+  await client.query(`
+    INSERT INTO pacientes (nome, cpf, email, data_nascimento) 
+    VALUES 
+      ('João Silva', '11122233344', 'joao@email.com', '1990-05-15'),
+      ('Maria Oliveira', '55566677788', 'maria@email.com', '1985-10-20')
+    ON CONFLICT (cpf) DO NOTHING;
+  `);
+
+  console.log("Dados de teste inseridos com sucesso.");
+};
+
 // FUNÇÃO DE CONEXÃO COM RETRY
 const connectWithRetry = async (retries = 5) => {
   while (retries) {
@@ -48,7 +72,6 @@ const connectWithRetry = async (retries = 5) => {
           cpf VARCHAR(11) UNIQUE NOT NULL,
           data_nascimento DATE,
           email VARCHAR(100),
-          historico_clinico TEXT,
           data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
       `);
@@ -69,9 +92,12 @@ const connectWithRetry = async (retries = 5) => {
           paciente_id INTEGER NOT NULL,
           medico_id INTEGER NOT NULL,
           data TIMESTAMP NOT NULL,
-          CONSTRAINT fk_paciente FOREIGN KEY (paciente_id) REFERENCES pacientes(id)
+          CONSTRAINT fk_paciente FOREIGN KEY (paciente_id) REFERENCES pacientes(id),
+          CONSTRAINT fk_medico FOREIGN KEY (medico_id) REFERENCES medicos(id)
         );
       `);
+
+      await seedDatabase(client);
      
 
       console.log("Banco de Dados: Tabelas verificadas/prontas.");
