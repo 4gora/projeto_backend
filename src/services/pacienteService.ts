@@ -1,5 +1,3 @@
-// src/services/pacienteService.ts
-
 import { Paciente } from "../entities/Paciente";
 import { pool } from "../database";
 
@@ -96,7 +94,8 @@ export async function atualizarPaciente(
       "DELETE FROM pacientes WHERE id = $1 RETURNING *",
       [id],
     );
-    return result.rowCount > 0; // Retorna true se algo foi deletado
+    const retorno = result.rowCount || 0;
+    return retorno > 0; // Retorna true se algo foi deletado
   }
 
   export async function listarPacientes(): Promise<Paciente[]> {

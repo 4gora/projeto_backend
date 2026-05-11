@@ -1,5 +1,3 @@
-// src/services/medicoService.ts
-
 import { Medico } from "../entities/Medico";
 import { pool } from "../database";
 
@@ -64,7 +62,8 @@ export async function excluirMedico(id: number) {
     "DELETE FROM medicos WHERE id = $1 RETURNING *",
     [id],
   );
-  return result.rowCount > 0; // Retorna true se algo foi deletado
+  const retorno = result.rowCount || 0;
+  return retorno > 0; // Retorna true se algo foi deletado
 }
 
 export async function listarMedicos(): Promise<Medico[]> {

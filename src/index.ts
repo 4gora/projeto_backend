@@ -121,14 +121,16 @@ app.use('/pacientes', pacienteRoutes);
 app.use('/agendamentos', agendamentoRoutes);
 app.use('/medicos', medicoRoutes);
 
-// INICIAR O SERVIDOR INDEPENDENTE DO BANCO
+// configurações diferentes entre ambiente de teste e produção/dev
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Servidor rodando em http://localhost:${PORT}`);
-  console.log(`Swagger disponível em http://localhost:${PORT}/api-docs`);
 
-  // Inicia a tentativa de conexão com o banco em segundo plano
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(PORT, () => {
+    console.log(`Servidor rodando em http://localhost:${PORT}`);
+    connectWithRetry(); // O banco só conecta aqui no modo normal
+  });
+} else {
   connectWithRetry();
-});
+}
 
 export default app;

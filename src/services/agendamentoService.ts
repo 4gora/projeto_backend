@@ -1,5 +1,3 @@
-// src/services/agendamentoService.ts
-
 import { pool } from '../database';
 import { Consulta } from '../entities/Consulta';
 
@@ -11,7 +9,21 @@ export class NotFoundError extends Error {
 }
 
 export async function agendarConsulta(consulta: Omit<Consulta, 'id'>): Promise<Consulta> {
-  // Verificaca se a data da consulta é no passado
+  // Verifica se já existe consulta para o mesmo médico e horário
+  const consultaExistente = await pool.query(
+    'SELECT id FROM consultas WHERE medico_id = $1 AND data = $2',
+    [consulta.medicoId, consulta.data]
+  );
+
+  const quantidade = consultaExistente.rowCount || 0;
+  
+  if (quantidade > 0) {
+    const error = new Error('Este horário já está ocupado para este médico.');
+    (error as any).code = '23505';
+    throw error;
+  }
+  
+  // Impede agendamento para datas passadas
   const hoje = new Date();
   if (new Date(consulta.data) < hoje) {
     throw new Error('Não é possível agendar uma consulta para uma data passada.');
@@ -58,6 +70,14 @@ export async function listarTodasConsultas(): Promise<any[]> {
 
 
 export async function listarConsultasPorPaciente(pacienteId: number): Promise<any[]> {
+  const paciente = await pool.query('SELECT id FROM pacientes WHERE id = $1', [pacienteId]);
+  
+  if (paciente.rowCount === 0) {
+    // Retorna erro 404 se paciente não existir
+    const error = new Error("Paciente não encontrado");
+    (error as any).type = 'NOT_FOUND'; 
+    throw error;
+  }
   const result = await pool.query(`
     SELECT 
       c.id, 
@@ -85,7 +105,7 @@ export async function cancelarConsulta(id: number): Promise<boolean> {
 }
 
 export async function remarcarConsulta(id: number, novaData: Date): Promise<Consulta> {
-  // Verificaca se a nova data da consulta é no passado
+  // Impede remarcar para datas passadas
   const hoje = new Date();
   if (novaData < hoje) {
     throw new Error('Não é possível remarcar para uma data passada.');

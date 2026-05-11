@@ -1,129 +1,115 @@
 /**
 * @swagger
 * {
-*     "/medicos": {
-*         "get": {
-*             "summary": "Listar todos os médicos",
-*             "tags": [
-*                 "Médicos"
-*             ],
-*             "responses": {
-*                 "200": {
-*                     "description": "Sucesso"
-*                 }
-*             }
-*         },
-*         "post": {
-*             "summary": "Cadastrar um novo médico",
-*             "tags": [
-*                 "Médicos"
-*             ],
-*             "requestBody": {
-*                 "required": true,
-*                 "content": {
-*                     "application/json": {
-*                         "schema": {
-*                             "type": "object",
-*                             "properties": {
-*                                 "nome": {
-*                                     "type": "string"
-*                                 },
-*                                 "crm": {
-*                                     "type": "string"
-*                                 },
-*                                 "email": {
-*                                     "type": "string"
-*                                 }
-*                             }
-*                         }
-*                     }
-*                 }
-*             },
-*             "responses": {
-*                 "201": {
-*                     "description": "Médico cadastrado"
-*                 },
-*                 "400": {
-*                     "description": "Erro na validação"
-*                 },
-*                 "409": {
-*                    "description": "CRM já existe"
-*                }
-*             }
+*   "/medicos": {
+*     "get": {
+*       "summary": "Listar todos os médicos",
+*       "description": "Retorna todos os médicos cadastrados.",
+*       "tags": ["Médicos"],
+*       "responses": {
+*         "200": {
+*           "description": "Lista de médicos",
+*           "content": { "application/json": { "example": [ { "id": 1, "nome": "Dra. Ana", "crm": "1234567890", "email": "ana@email.com", "dataCriacao": "2026-05-10T14:00:00Z" } ] } }
 *         }
+*       }
 *     },
-*     "/medicos/{id}": {
-*         "put": {
-*             "summary": "Atualizar dados de um médico",
-*             "tags": [
-*                 "Médicos"
-*             ],
-*             "parameters": [
-*                 {
-*                     "name": "id",
-*                     "in": "path",
-*                     "required": true,
-*                     "schema": {
-*                         "type": "integer"
-*                     }
-*                 }
-*             ],
-*             "requestBody": {
-*                 "description": "Nota: Todos os campos são opcionais. Envie apenas as propriedades
-*                 que deseja alterar. Os dados não enviados serão preservados conforme o cadastro original.",
-*                 "content": {
-*                     "application/json": {
-*                         "schema": {
-*                             "type": "object",
-*                             "properties": {
-                                "nome": { "type": "string", "example": "Dr. Alessandro Rosario" },
-                                "crm": { "type": "string", "example": "1234567890" },
-                                "email": { "type": "string", "example": "alessandro@email.com" }
-                              }
-*                         }
-*                     }
-*                 }
-*             },
-*             "responses": {
-*                 "200": {
-*                     "description": "Médico atualizado com sucesso"
-*                 },
-*                 "404": {
-*                     "description": "Médico não encontrado"
-*                 },
-*                 "409": {
-*                    "description": "CRM já existe"
-*                }
+*     "post": {
+*       "summary": "Cadastrar um novo médico",
+*       "description": "Adiciona um novo médico ao sistema.",
+*       "tags": ["Médicos"],
+*       "requestBody": {
+*         "required": true,
+*         "content": {
+*           "application/json": {
+*             "schema": {
+*               "type": "object",
+*               "properties": {
+*                 "nome": { "type": "string", "description": "Nome completo do médico" },
+*                 "crm": { "type": "string", "description": "CRM do médico" },
+*                 "email": { "type": "string", "description": "E-mail do médico" }
+*               },
+*               "required": ["nome", "crm", "email"]
 *             }
-*         },
-*         "delete": {
-*             "summary": "Remover um médico",
-*             "tags": [
-*                 "Médicos"
-*             ],
-*             "parameters": [
-*                 {
-*                     "name": "id",
-*                     "in": "path",
-*                     "required": true,
-*                     "schema": {
-*                         "type": "integer"
-*                     }
-*                 }
-*             ],
-*             "responses": {
-*                 "204": {
-*                     "description": "Médico removido com sucesso"
-*                 },
-*                 "404": {
-*                     "description": "Médico não encontrado"
-*                 }
-*             }
+*           }
 *         }
+*       },
+*       "responses": {
+*         "201": {
+*           "description": "Médico cadastrado",
+*           "content": { "application/json": { "example": { "id": 1, "nome": "Dra. Ana", "crm": "1234567890", "email": "ana@email.com", "dataCriacao": "2026-05-10T14:00:00Z" } } }
+*         },
+*         "400": {
+*           "description": "Erro na validação",
+*           "content": { "application/json": { "example": { "error": "O CRM deve ter exatamente 10 números." } } }
+*         },
+*         "409": {
+*           "description": "CRM já existe",
+*           "content": { "application/json": { "example": { "error": "CRM já existe" } } }
+*         }
+*       }
 *     }
+*   },
+*   "/medicos/{id}": {
+*     "put": {
+*       "summary": "Atualizar dados de um médico",
+*       "description": "Atualiza as informações de um médico existente.",
+*       "tags": ["Médicos"],
+*       "parameters": [
+*         { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" }, "description": "ID do médico" }
+*       ],
+*       "requestBody": {
+*         "description": "Todos os campos são opcionais. Envie apenas as propriedades que deseja alterar.",
+*         "content": {
+*           "application/json": {
+*             "schema": {
+*               "type": "object",
+*               "properties": {
+*                 "nome": { "type": "string", "example": "Dr. Alessandro Rosario" },
+*                 "crm": { "type": "string", "example": "1234567890" },
+*                 "email": { "type": "string", "example": "alessandro@email.com" }
+*               }
+*             }
+*           }
+*         }
+*       },
+*       "responses": {
+*         "200": {
+*           "description": "Médico atualizado com sucesso",
+*           "content": { "application/json": { "example": { "id": 1, "nome": "Dra. Ana", "crm": "1234567890", "email": "ana@email.com", "dataCriacao": "2026-05-10T14:00:00Z" } } }
+*         },
+*         "400": {
+*           "description": "Erro na validação",
+*           "content": { "application/json": { "example": { "error": "O CRM deve ter exatamente 10 números." } } }
+*         },
+*         "404": {
+*           "description": "Médico não encontrado",
+*           "content": { "application/json": { "example": { "error": "Médico não encontrado" } } }
+*         },
+*         "409": {
+*           "description": "CRM já existe",
+*           "content": { "application/json": { "example": { "error": "CRM já existe" } } }
+*         }
+*       }
+*     },
+*     "delete": {
+*       "summary": "Remover um médico",
+*       "description": "Remove um médico existente pelo ID.",
+*       "tags": ["Médicos"],
+*       "parameters": [
+*         { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" }, "description": "ID do médico" }
+*       ],
+*       "responses": {
+*         "204": { "description": "Médico removido com sucesso" },
+*         "404": {
+*           "description": "Médico não encontrado",
+*           "content": { "application/json": { "example": { "error": "Médico não encontrado" } } }
+*         }
+*       }
+*     }
+*   }
 * }
 */
-// src/routes/medicos.ts
+
 import { Router } from "express";
 import {
   cadastrarMedico,
@@ -135,7 +121,7 @@ import { handleRouteError } from "../utils/errorHandler";
 
 const router = Router();
 
-// POST /medicos - Cadastrar médico
+// Cria um novo médico
 router.post("/", async (req, res) => {
   try {
     const { nome, crm, email } = req.body;
@@ -146,7 +132,7 @@ router.post("/", async (req, res) => {
   }
 });
 
-// GET /medicos - Listar todos os médicos
+// Lista todos os médicos cadastrados
 router.get("/", async (_req, res) => {
   try {
     const medicos = await listarMedicos();
@@ -156,7 +142,7 @@ router.get("/", async (_req, res) => {
   }
 });
   
-// PUT /medicos/:id - Atualizar um médico
+// Atualiza os dados de um médico existente
 router.put("/:id", async (req, res) => {
   try {
     const { id } = req.params;
@@ -173,7 +159,7 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-// DELETE /medicos/:id - Excluir um médico
+// Remove um médico pelo ID
 router.delete(":id", async (req, res) => {
   try {
     const { id } = req.params;

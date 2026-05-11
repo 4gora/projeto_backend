@@ -1,151 +1,117 @@
 /**
 * @swagger
 * {
-*     "/pacientes": {
-*         "get": {
-*             "summary": "Listar pacientes",
-*             "tags": [
-*                 "Pacientes"
-*             ],
-*             "responses": {
-*                 "200": {
-*                     "description": "Sucesso"
-*                 }
-*             }
-*         },
-*         "post": {
-*             "summary": "Cadastrar paciente",
-*             "tags": [
-*                 "Pacientes"
-*             ],
-*             "requestBody": {
-*                 "required": true,
-*                 "content": {
-*                     "application/json": {
-*                         "schema": {
-*                             "type": "object",
-*                             "properties": {
-*                                 "nome": {
-*                                     "type": "string"
-*                                 },
-*                                 "cpf": {
-*                                     "type": "string"
-*                                 },
-*                                 "email": {
-*                                     "type": "string"
-*                                 },
-*                                 "dataNascimento": {
-*                                     "type": "string",
-*                                     "format": "date",
-*                                     "example": "1980-01-01"
-*                                 }
-*                             }
-*                         }
-*                     }
-*                 }
-*             },
-*             "responses": {
-*                 "201": {
-*                     "description": "Paciente cadastrado"
-*                 },
-*                 "400": {
-*                     "description": "Erro na validação"
-*                 },
-*                 "409": {
-*                     "description": "Conflito: CPF já cadastrado"
-*                 }
-*             }
+*   "/pacientes": {
+*     "get": {
+*       "summary": "Listar todos os pacientes",
+*       "description": "Retorna todos os pacientes cadastrados.",
+*       "tags": ["Pacientes"],
+*       "responses": {
+*         "200": {
+*           "description": "Lista de pacientes",
+*           "content": { "application/json": { "example": [ { "id": 1, "nome": "João", "cpf": "12345678901", "dataNascimento": "1980-01-01", "email": "joao@email.com", "dataCriacao": "2026-05-10T14:00:00Z" } ] } }
 *         }
+*       }
 *     },
-*     "/pacientes/{id}": {
-*         "put": {
-*             "summary": "Atualizar dados de um paciente",
-*             "tags": [
-*                 "Pacientes"
-*             ],
-*             "parameters": [
-*                 {
-*                     "name": "id",
-*                     "in": "path",
-*                     "required": true,
-*                     "schema": {
-*                         "type": "integer"
-*                     }
-*                 }
-*             ],
-*             "requestBody": {
-*                 "description": "Nota: Todos os campos são opcionais. Envie apenas as propriedades que deseja alterar. Os dados não enviados serão preservados conforme o cadastro original.",
-*                 "content": {
-*                     "application/json": {
-*                         "schema": {
-*                             "type": "object",
-*                             "properties": {
-*                                 "nome": {
-*                                     "type": "string",
-*                                     "example": "Alessandro Rosario"
-*                                 },
-*                                 "cpf": {
-*                                     "type": "string",
-*                                     "example": "12345678901"
-*                                 },
-*                                 "email": {
-*                                     "type": "string",
-*                                     "example": "alessandro@email.com"
-*                                 },
-*                                 "dataNascimento": {
-*                                     "type": "string",
-*                                     "format": "date",
-*                                     "example": "1980-01-01"
-*                                 }
-*                             }
-*                         }
-*                     }
-*                 }
-*             },
-*             "responses": {
-*                 "200": {
-*                     "description": "Paciente atualizado com sucesso"
-*                 },
-*                 "400": {
-*                     "description": "Erro na validação"
-*                 },
-*                 "404": {
-*                     "description": "Paciente não encontrado"
-*                 },
-*                 "409": {
-*                     "description": "Conflito: Novo CPF já está em uso"
-*                 }
+*     "post": {
+*       "summary": "Cadastrar paciente",
+*       "description": "Adiciona um novo paciente ao sistema.",
+*       "tags": ["Pacientes"],
+*       "requestBody": {
+*         "required": true,
+*         "content": {
+*           "application/json": {
+*             "schema": {
+*               "type": "object",
+*               "properties": {
+*                 "nome": { "type": "string", "description": "Nome completo do paciente" },
+*                 "cpf": { "type": "string", "description": "CPF do paciente" },
+*                 "email": { "type": "string", "description": "E-mail do paciente" },
+*                 "dataNascimento": { "type": "string", "format": "date", "description": "Data de nascimento (YYYY-MM-DD)", "example": "1980-01-01" }
+*               },
+*               "required": ["nome", "cpf", "email", "dataNascimento"]
 *             }
-*         },
-*         "delete": {
-*             "summary": "Remover um paciente",
-*             "tags": [
-*                 "Pacientes"
-*             ],
-*             "parameters": [
-*                 {
-*                     "name": "id",
-*                     "in": "path",
-*                     "required": true,
-*                     "schema": {
-*                         "type": "integer"
-*                     }
-*                 }
-*             ],
-*             "responses": {
-*                 "204": {
-*                     "description": "Paciente removido com sucesso"
-*                 },
-*                 "404": {
-*                     "description": "Paciente não encontrado"
-*                 }
-*             }
+*           }
 *         }
+*       },
+*       "responses": {
+*         "201": {
+*           "description": "Paciente cadastrado",
+*           "content": { "application/json": { "example": { "id": 1, "nome": "João", "cpf": "12345678901", "dataNascimento": "1980-01-01", "email": "joao@email.com", "dataCriacao": "2026-05-10T14:00:00Z" } } }
+*         },
+*         "400": {
+*           "description": "Erro na validação",
+*           "content": { "application/json": { "example": { "error": "O CPF deve ter exatamente 11 números." } } }
+*         },
+*         "409": {
+*           "description": "Conflito: CPF já cadastrado",
+*           "content": { "application/json": { "example": { "error": "CPF já existe" } } }
+*         }
+*       }
 *     }
+*   },
+*   "/pacientes/{id}": {
+*     "put": {
+*       "summary": "Atualizar dados de um paciente",
+*       "description": "Atualiza as informações de um paciente existente.",
+*       "tags": ["Pacientes"],
+*       "parameters": [
+*         { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" }, "description": "ID do paciente" }
+*       ],
+*       "requestBody": {
+*         "description": "Todos os campos são opcionais. Envie apenas as propriedades que deseja alterar.",
+*         "content": {
+*           "application/json": {
+*             "schema": {
+*               "type": "object",
+*               "properties": {
+*                 "nome": { "type": "string", "example": "Alessandro Rosario" },
+*                 "cpf": { "type": "string", "example": "12345678901" },
+*                 "email": { "type": "string", "example": "alessandro@email.com" },
+*                 "dataNascimento": { "type": "string", "format": "date", "example": "1980-01-01" }
+*               }
+*             }
+*           }
+*         }
+*       },
+*       "responses": {
+*         "200": {
+*           "description": "Paciente atualizado com sucesso",
+*           "content": { "application/json": { "example": { "id": 1, "nome": "João", "cpf": "12345678901", "dataNascimento": "1980-01-01", "email": "joao@email.com", "dataCriacao": "2026-05-10T14:00:00Z" } } }
+*         },
+*         "400": {
+*           "description": "Erro na validação",
+*           "content": { "application/json": { "example": { "error": "O CPF deve ter exatamente 11 números." } } }
+*         },
+*         "404": {
+*           "description": "Paciente não encontrado",
+*           "content": { "application/json": { "example": { "error": "Paciente não encontrado" } } }
+*         },
+*         "409": {
+*           "description": "Conflito: Novo CPF já está em uso",
+*           "content": { "application/json": { "example": { "error": "CPF já existe" } } }
+*         }
+*       }
+*     },
+*     "delete": {
+*       "summary": "Remover um paciente",
+*       "description": "Remove um paciente existente pelo ID.",
+*       "tags": ["Pacientes"],
+*       "parameters": [
+*         { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" }, "description": "ID do paciente" }
+*       ],
+*       "responses": {
+*         "204": { "description": "Paciente removido com sucesso" },
+*         "404": {
+*           "description": "Paciente não encontrado",
+*           "content": { "application/json": { "example": { "error": "Paciente não encontrado" } } }
+*         }
+*       }
+*     }
+*   }
 * }
 */
 
-// src/routes/pacientes.ts
 import { Router } from "express";
 import {
   atualizarPaciente,
@@ -157,7 +123,7 @@ import { handleRouteError } from "../utils/errorHandler";
 
 const router = Router();
 
-// POST /pacientes - Cadastrar paciente
+// Cria um novo paciente
 router.post("/", async (req, res) => {
   try {
     const { nome, cpf, dataNascimento, email } = req.body;
@@ -168,7 +134,7 @@ router.post("/", async (req, res) => {
   }
 });
 
-// GET /pacientes - Listar pacientes
+// Lista todos os pacientes cadastrados
 router.get("/", async (_req, res) => {
   try {
     const pacientes = await listarPacientes();
@@ -178,7 +144,7 @@ router.get("/", async (_req, res) => {
   }
 });
 
-// PUT /pacientes/:id - Atualizar um paciente
+// Atualiza os dados de um paciente existente
 router.put("/:id", async (req, res) => {
   try {
     const { id } = req.params;
@@ -195,7 +161,7 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-// DELETE /pacientes/:id - Excluir um paciente
+// Remove um paciente pelo ID
 router.delete("/:id", async (req, res) => {
   try {
     const { id } = req.params;

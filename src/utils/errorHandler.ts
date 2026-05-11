@@ -3,10 +3,14 @@ import { Response } from 'express';
 export const handleRouteError = (res: Response, error: any) => {
   // Erro de Duplicidade no Postgres (Unique Constraint)
   if (error.code === '23505') {
+    // Repassa a mensagem original se for sobre horário duplicado
+    if (error.message && error.message.toLowerCase().includes('horário') || error.message.toLowerCase().includes('horario')) {
+      return res.status(409).json({ error: error.message });
+    }
     return res.status(409).json({ error: 'Conflito: Este registro (CPF, CRM ou E-mail) já existe.' });
   }
 
-  // Erro de Validação de Tamanho/Tipo
+  // Erro de Validação genérico
   if (error instanceof Error) {
     return res.status(400).json({ error: error.message });
   }
