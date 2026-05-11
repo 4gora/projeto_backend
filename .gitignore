@@ -34,7 +34,6 @@ Thumbs.db
 
 # Arquivos de ambiente
 .env
-.env.*
 
 # Relatórios de erros
 error_log
